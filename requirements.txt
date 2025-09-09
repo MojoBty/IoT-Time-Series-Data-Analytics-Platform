@@ -1,0 +1,19 @@
+# IoT Time Series Platform Dependencies
+
+# Web Framework
+Flask==2.3.3
+python-dotenv==1.0.0
+
+# Time Series Database
+influxdb-client==1.38.0
+
+# Object Storage
+python-swiftclient==4.3.0
+
+# HTTP Requests
+requests==2.31.0
+
+# Data Processing
+pandas==2.1.1
+numpy==1.24.3
+
