@@ -4,6 +4,8 @@ Swift Object Storage Client
 import swiftclient
 import json
 from datetime import datetime
+import io
+import pandas as pd
 
 def get_swift_connection():
     """Get a Swift connection with default test credentials"""
@@ -47,6 +49,22 @@ def archive_csv_data(csv_content, filename=None):
     
     conn.put_object("sensor-archive", filename, contents=csv_content.encode('utf-8'))
     print(f"Archived CSV data to {filename}")
+
+def archive_parquet_data(df, filename=None):
+    """Archive Pandas DataFrame as Parquet"""
+    conn = get_swift_connection()
+    ensure_container_exists(conn)
+    
+    if not filename:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"sensor_data_{timestamp}.parquet"
+    
+    buf = io.BytesIO()
+    df.to_parquet(buf, index=False, compression="snappy")
+    buf.seek(0)
+    
+    conn.put_object("sensor-archive", filename, contents=buf.read(), content_type="application/octet-stream")
+    print(f"Archived {len(df)} records to {filename}")
 
 def list_archived_files():
     """List all archived files"""
